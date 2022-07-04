@@ -1,0 +1,57 @@
+version: "3.3"
+
+services:
+  # # ------------------------------------------------------------------------------------------------------------ #
+  # #                                                      API                                                     #
+  # # ------------------------------------------------------------------------------------------------------------ #
+  #   auth-service:
+  #     container_name: auth-service
+  #     # Get the dockerfile
+  #     build:
+  #       context: ./auth-service/
+  #       dockerfile: ./dev.Dockerfile
+  #     # Define dependencies to start before auth-service
+  #     depends_on:
+  #       mongodb: # Comment this if you wanna use mongo on local machine and uncomment network_mode
+  #         condition: service_started
+  #     # Create and bind a volume to store files and also track changes
+  #     volumes:
+  #       - ./auth-service/:/usr/src/app
+  #     # Uncomment command below to use local instance (mongodb, etc). Make sure mongodb is already removed (or commented) from dependencies
+  #     # network_mode: host
+  #     # Bind port of localhost to port of container
+  #     ports:
+  #       - "3000:3000"
+  #     # Set the node_env
+  #     environment:
+  #       - NODE_ENV=dev
+  #     # Use .env file
+  #     env_file: ./.auth-service.env
+  #     command: ["npm", "run", "dev"]
+
+  # ------------------------------------------------------------------------------------------------------------ #
+  #                                                   DATABASE                                                   #
+  # ------------------------------------------------------------------------------------------------------------ #
+  mongodb:
+    container_name: mongodb
+    image: mongo:4.4.9
+    volumes:
+      - ./mongodb_data/data/:/data/db
+      - ./mongodb_data/config/:/data/configdb
+    ports:
+      - 27017:27017
+    command: mongod
+    healthcheck:
+      test: ["CMD", "docker-healthcheck"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
+  # ------------------------------------------------------------------------------------------------------------ #
+  #                                                     REDIS                                                    #
+  # ------------------------------------------------------------------------------------------------------------ #
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
