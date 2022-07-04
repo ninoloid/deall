@@ -3,6 +3,7 @@ import {BaseRepository} from '../../../repository/BaseRepository';
 import {User} from '../domains/User';
 import {MongoUserMapper, MongoUserProps} from '../mappers/MongoUserMapper';
 import {UserModel} from '../models/User';
+import { UserCredentialVM } from '../vms/UserCredentialVM';
 import { JSONUserDetailVM, UserDetailVM } from '../vms/UserDetailVM';
 import {IUserQuery } from './IUserQuery';
 
@@ -31,7 +32,28 @@ export class UserQuery
 
     this.logger.debug({methodName, traceId, query: {command: 'get detail user', props: user || {}}});
 
-    // this.logger.trace({methodName, traceId}, `END`);
+    this.logger.trace({methodName, traceId}, `END`);
+
+    return response
+  }
+
+  async getUserCredentialByUsername(username: string): Promise<UserCredentialVM> {
+    const methodName = `getUserCredentialByUsername`;
+    const traceId = CompositionRoot.getTraceId();
+
+    this.logger.trace({methodName, traceId}, `BEGIN`);
+
+    let response: UserCredentialVM | undefined;
+
+    const user: UserCredentialVM = await this.model.findOne({username});
+
+    if (user) {
+      response = user
+    };
+
+    this.logger.debug({methodName, traceId, query: {command: 'get detail user', props: user || {}}});
+
+    this.logger.trace({methodName, traceId}, `END`);
 
     return response
   }

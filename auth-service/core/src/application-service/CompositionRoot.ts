@@ -11,9 +11,10 @@ import {IUserService} from '../modules/user/services/IUserService';
 import {RegisterUserUseCase} from '../modules/user/use-cases/commands/RegisterUserUseCase';
 import {UserApplicationService} from './user/UserApplicationService';
 import {IUserApplicationService} from './user/IUserApplicationService';
-import { UserQuery } from '../modules/user/queries/UserQuery';
-import { IUserQuery } from '../modules/user/queries/IUserQuery';
-import { UserDetailUseCase } from '../modules/user/use-cases/queries/UserDetailUseCase';
+import {UserQuery} from '../modules/user/queries/UserQuery';
+import {IUserQuery} from '../modules/user/queries/IUserQuery';
+import {UserDetailUseCase} from '../modules/user/use-cases/queries/UserDetailUseCase';
+import {UserLoginUseCase} from '../modules/user/use-cases/queries/UserLoginUseCase';
 
 const NAMEPSACE = 'Deall SejutaCita';
 const ns = createNamespace(NAMEPSACE);
@@ -117,11 +118,22 @@ export default class CompositionRoot {
     _container.register<UserDetailUseCase>(
       InjectionToken.UserDetailUseCase,
       asFunction(() => {
-        const userService = _container.resolve<IUserQuery>(
+        const userQuery = _container.resolve<IUserQuery>(
           InjectionToken.UserQuery,
         );
 
-        return new UserDetailUseCase(userService);
+        return new UserDetailUseCase(userQuery);
+      }).singleton(),
+    );
+
+    _container.register<UserLoginUseCase>(
+      InjectionToken.UserLoginUseCase,
+      asFunction(() => {
+        const userQuery = _container.resolve<IUserQuery>(
+          InjectionToken.UserQuery,
+        );
+
+        return new UserLoginUseCase(userQuery);
       }).singleton(),
     );
   }
@@ -137,7 +149,11 @@ export default class CompositionRoot {
 
           userDetail: _container.resolve<UserDetailUseCase>(
             InjectionToken.UserDetailUseCase
-          )
+          ),
+
+          userLogin: _container.resolve<UserLoginUseCase>(
+            InjectionToken.UserLoginUseCase
+          ),
         });
       }),
     );

@@ -59,11 +59,11 @@ export class UserDetailVM {
     } else {
       props = guardResult.value!;
 
-      const promo = new UserDetailVM({
+      const userDetails = new UserDetailVM({
         ...props,
       });
 
-      return Result.ok(promo);
+      return Result.ok(userDetails);
     }
   }
 }

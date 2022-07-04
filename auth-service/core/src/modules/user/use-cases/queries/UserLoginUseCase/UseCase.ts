@@ -7,43 +7,46 @@ import {Guard} from '../../../../../logic/Guard';
 import {Either, left, Result, right} from '../../../../../logic/Result';
 import {User} from '../../../domains/User';
 import {IUserService} from '../../../services/IUserService';
-import {UserDetailDTO, UserDetailErrors} from '.';
-import { IUserQuery } from '../../../queries/IUserQuery';
-import { JSONUserDetailVM } from '../../../vms/UserDetailVM';
+import {UserLoginDTO, UserLoginErrors} from '.';
+import {IUserQuery} from '../../../queries/IUserQuery';
+import {JSONUserCredentialVM} from '../../../vms/UserCredentialVM';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
   | ApplicationError.ValidationError
-  | UserDetailErrors.InvalidRoleAccess
-  | UserDetailErrors.UserNotFound,
-  Result<UserDetailUseCaseResponse>
+  | UserLoginErrors.InvalidUsernameOrPassword,
+  Result<UserLoginUseCaseResponse>
 >;
 
-export type UserDetailResponse = Response;
+export type UserLoginResponse = Response;
 
-export type UserDetailUseCaseResponse = JSONUserDetailVM
+export type UserLoginUseCaseResponse = JSONUserCredentialVM
 
-export class UserDetailUseCase extends BaseUseCase<
-  UserDetailDTO,
-  UserDetailResponse
+export class UserLoginUseCase extends BaseUseCase<
+  UserLoginDTO,
+  UserLoginResponse
 > {
 
-  private SCHEMA = joi.object<UserDetailDTO>({
-    id: joi.string().hex().length(24),
+  private SCHEMA = joi.object<UserLoginDTO>({
+    username: joi.string().required(),
+    password: joi.string().required(),
   }).required();
 
-  constructor(protected userQuery: IUserQuery) {
-    super('UserDetailUseCase');
+  constructor(
+    protected userQuery: IUserQuery,
+    // protected authService: IAuthService,
+  ) {
+    super('UserLoginUseCase');
   }
 
   async execute(
-    req: UserDetailDTO,
-  ): Promise<UserDetailResponse> {
+    req: UserLoginDTO,
+  ): Promise<UserLoginResponse> {
     const methodName = 'execute';
     const traceId = CompositionRoot.getTraceId();
     this.logger.trace({methodName, traceId}, 'BEGIN');
 
-    const guardResult = Guard.againstSchema<UserDetailDTO>(
+    const guardResult = Guard.againstSchema<UserLoginDTO>(
       this.SCHEMA,
       req,
     );
@@ -58,11 +61,11 @@ export class UserDetailUseCase extends BaseUseCase<
     const dto = guardResult.value!;
 
     try {
-      const user = await this.userQuery.getUserDetailById(dto.id)
+      const user = await this.userQuery.getUserCredentialByUsername(dto.username)
 
       if (!user) {
         return left(
-          new UserDetailErrors.UserNotFound(dto.id),
+          new UserLoginErrors.InvalidUsernameOrPassword(),
         );
       }
 
@@ -70,7 +73,7 @@ export class UserDetailUseCase extends BaseUseCase<
 
       this.logger.trace({methodName, traceId}, 'END');
 
-      return right(Result.ok<UserDetailUseCaseResponse>(response));
+      return right(Result.ok<UserLoginUseCaseResponse>(response));
     } catch (e) {
       const err = e as Error;
       return left(new ApplicationError.UnexpectedError(e as Error));
