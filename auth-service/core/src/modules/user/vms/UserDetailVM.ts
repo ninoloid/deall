@@ -2,10 +2,9 @@ import joi from 'joi';
 import {DomainError} from '../../../errors/DomainError';
 import {Guard} from '../../../logic/Guard';
 import {Result} from '../../../logic/Result';
-import {ObjectId} from 'mongoose';
 
 export interface UserDetailVMProps {
-  readonly id: ObjectId;
+  readonly id: string;
   readonly username: string;
 
   readonly name: string;
@@ -26,17 +25,17 @@ export class UserDetailVM {
   private constructor(public props: UserDetailVMProps) {}
 
   private static SCHEMA = joi.object<UserDetailVMProps>({
-    id: joi.string().hex().length(24),
+    id: joi.string().hex().length(24).required(),
 
     username: joi.string().required(),
     name: joi.string().required(),
     email: joi.string().required(),
-    phone: joi.string().required(),
+    phone: joi.string().optional(),
   }).required();
 
   public toJSON(): JSONUserDetailVM {
     return {
-      id: this.props.id.toString(),
+      id: this.props.id,
 
       username: this.props.username,
       name: this.props.name,

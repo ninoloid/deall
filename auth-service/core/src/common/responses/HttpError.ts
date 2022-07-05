@@ -28,7 +28,7 @@ export namespace HttpError {
   export class ForbiddenError extends HttpBaseError {
     constructor(cause?: BaseError) {
       super(
-        'ForbiddenEror',
+        'ForbiddenError',
         HttpErrorCodes.ForbiddenError,
         cause,
         cause?.details,
@@ -61,6 +61,17 @@ export namespace HttpError {
   export class InvalidToken extends HttpBaseError {
     constructor(cause?: BaseError) {
       super('InvalidToken', HttpErrorCodes.InvalidToken, cause, cause?.details);
+    }
+  }
+
+  export class TokenNotProvided extends HttpBaseError {
+    constructor(cause?: BaseError) {
+      super(
+        'TokenNotProvidedError',
+        HttpErrorCodes.ForbiddenError,
+        cause,
+        cause?.details,
+      );
     }
   }
 

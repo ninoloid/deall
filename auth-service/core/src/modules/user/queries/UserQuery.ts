@@ -1,11 +1,11 @@
 import CompositionRoot from '../../../application-service/CompositionRoot';
+import { UserRole } from '../../../common/Constants';
 import {BaseRepository} from '../../../repository/BaseRepository';
-import {User} from '../domains/User';
-import {MongoUserMapper, MongoUserProps} from '../mappers/MongoUserMapper';
+import {MongoUserProps} from '../mappers/MongoUserMapper';
 import {UserModel} from '../models/User';
-import { UserCredentialVM } from '../vms/UserCredentialVM';
-import { JSONUserDetailVM, UserDetailVM } from '../vms/UserDetailVM';
-import {IUserQuery } from './IUserQuery';
+import {UserCredentialVM} from '../vms/UserCredentialVM';
+import {UserDetailVM} from '../vms/UserDetailVM';
+import {IUserQuery} from './IUserQuery';
 
 export class UserQuery
   extends BaseRepository<MongoUserProps>
@@ -24,10 +24,28 @@ export class UserQuery
 
     let response: UserDetailVM | undefined;
 
-    const user: UserDetailVM = await this.model.findById(id);
+    const user: {
+      id: string,
+      username: string,
+      name: string,
+      email: string,
+      phone?: string,
+    } = await this.model.findById(id);
 
     if (user) {
-      response = user
+      const userOrError = UserDetailVM.create({
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+      })
+
+      if (userOrError.isFailure) {
+        throw userOrError.errorValue();
+      }
+
+      response = userOrError.getValue();
     };
 
     this.logger.debug({methodName, traceId, query: {command: 'get detail user', props: user || {}}});
@@ -45,13 +63,29 @@ export class UserQuery
 
     let response: UserCredentialVM | undefined;
 
-    const user: UserCredentialVM = await this.model.findOne({username});
+    const user: {
+      id: string,
+      username: string,
+      password: string,
+      role: string,
+    } = await this.model.findOne({username});
 
     if (user) {
-      response = user
+      const userOrError = UserCredentialVM.create({
+        id: user.id,
+        username: user.username,
+        password: user.password,
+        role: user.role as UserRole,
+      })
+
+      if (userOrError.isFailure) {
+        throw userOrError.errorValue();
+      }
+
+      response = userOrError.getValue();
     };
 
-    this.logger.debug({methodName, traceId, query: {command: 'get detail user', props: user || {}}});
+    this.logger.debug({methodName, traceId, query: {command: 'get user credentials', props: user || {}}});
 
     this.logger.trace({methodName, traceId}, `END`);
 

@@ -2,22 +2,22 @@ import joi from 'joi';
 import {DomainError} from '../../../errors/DomainError';
 import {Guard} from '../../../logic/Guard';
 import {Result} from '../../../logic/Result';
-
+import {DateUtil} from '../../../common/util/DateUtil';
 export interface UserTokenVMProps {
   readonly username: string;
 
-  readonly token: string;
-  readonly tokenExpire: number;
+  readonly accessToken: string;
+  readonly accessTokenExpire: Date;
 
   readonly refreshToken: string;
-  readonly refreshTokenExpire: number;
+  readonly refreshTokenExpire: Date;
 }
 
 export interface JSONUserTokenVM {
   readonly username: string;
 
-  readonly token: string;
-  readonly tokenExpire: number;
+  readonly accessToken: string;
+  readonly accessTokenExpire: number;
 
   readonly refreshToken: string;
   readonly refreshTokenExpire: number;
@@ -29,22 +29,22 @@ export class UserTokenVM {
   private static SCHEMA = joi.object<UserTokenVMProps>({
     username: joi.string().required(),
 
-    token: joi.string().required(),
-    tokenExpire: joi.number().required(),
+    accessToken: joi.string().required(),
+    accessTokenExpire: joi.date().required(),
 
     refreshToken: joi.string().required(),
-    refreshTokenExpire: joi.number().required(),
+    refreshTokenExpire: joi.date().required(),
   }).required();
 
   public toJSON(): JSONUserTokenVM {
     return {
       username: this.props.username,
 
-      token: this.props.token,
-      tokenExpire: this.props.tokenExpire,
+      accessToken: this.props.accessToken,
+      accessTokenExpire: DateUtil.DateToUnixSeconds(this.props.accessTokenExpire),
 
       refreshToken: this.props.refreshToken,
-      refreshTokenExpire: this.props.refreshTokenExpire,
+      refreshTokenExpire: DateUtil.DateToUnixSeconds(this.props.refreshTokenExpire),
     };
   }
 

@@ -16,6 +16,7 @@ export const InjectionToken = {
 
   // SERVICES
   UserService: 'USER_SERVICE',
+  AuthService: 'AURH_SERVICE',
 
   // USE CASES
   RegisterUserUseCase: 'REGISTER_USER_USE_CASE',
@@ -23,5 +24,19 @@ export const InjectionToken = {
   UserLoginUseCase: 'USER_LOGIN_USE_CASE',
 
   // REPOSITORY
-  UserRepository: 'USER_REPOSITORY'
+  UserRepository: 'USER_REPOSITORY',
+
+  // PROVIDERS
+  TokenProvider: 'TOKEN_PROVIDER',
+
+  // TOKEN:
+  PrivateKey: 'PRIVATE_KEY',
+  AccessTokenDuration: 'ACCESS_TOKEN_DURATION',
+  RefreshTokenDuration: 'REFRESH_TOKEN_DURATION',
+}
+
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  USER_SPECIFIED = 'USER_SPECIFIED',
 }

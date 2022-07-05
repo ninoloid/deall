@@ -8,6 +8,7 @@ import {
 import {IAPIGatewayResponse, forbidden, badRequest, fail, notFound} from '../../../core/src/common/responses/HandlerResponse';
 import {HttpError} from '../../../core/src/common/responses/HttpError';
 import {ApplicationError} from '../../../core/src/errors/ApplicationError';
+import { UserRole } from '../../../core/src/common/Constants';
 
 async function userDetail(
   req: Request,
@@ -27,6 +28,19 @@ async function userDetail(
   logger.trace({methodName, traceId}, 'BEGIN');
 
   const params = req.params as unknown as UserDetailParams;
+
+  const activeUser = req['user'];
+
+  if (activeUser.role !== UserRole.ADMIN) {
+    if (params.id !== activeUser.id) {
+      const invalidUserError = forbidden(new HttpError.ForbiddenError())
+      res
+        .status(invalidUserError.statusCode)
+        .json(JSON.parse(invalidUserError.body))
+
+      return
+    }
+  }
 
   const dto: UserDetailDTO = params;
 

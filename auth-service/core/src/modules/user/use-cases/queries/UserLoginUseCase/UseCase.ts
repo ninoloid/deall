@@ -1,15 +1,14 @@
 import joi from 'joi';
 import CompositionRoot from '../../../../../application-service/CompositionRoot';
 import {BaseUseCase} from '../../../../../domain/BaseUseCase';
-import {UniqueEntityId} from '../../../../../domain/UniqueEntityId';
 import {ApplicationError} from '../../../../../errors/ApplicationError';
 import {Guard} from '../../../../../logic/Guard';
 import {Either, left, Result, right} from '../../../../../logic/Result';
-import {User} from '../../../domains/User';
-import {IUserService} from '../../../services/IUserService';
 import {UserLoginDTO, UserLoginErrors} from '.';
 import {IUserQuery} from '../../../queries/IUserQuery';
-import {JSONUserCredentialVM} from '../../../vms/UserCredentialVM';
+import {IAuthService} from '../../../../auth/services/IAuthService';
+import {JSONUserTokenVM, UserTokenVM} from '../../../vms/UserTokenVM';
+import { UserRole } from '../../../../../common/Constants';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
@@ -20,7 +19,7 @@ type Response = Either<
 
 export type UserLoginResponse = Response;
 
-export type UserLoginUseCaseResponse = JSONUserCredentialVM
+export type UserLoginUseCaseResponse = JSONUserTokenVM;
 
 export class UserLoginUseCase extends BaseUseCase<
   UserLoginDTO,
@@ -34,7 +33,7 @@ export class UserLoginUseCase extends BaseUseCase<
 
   constructor(
     protected userQuery: IUserQuery,
-    // protected authService: IAuthService,
+    protected authService: IAuthService,
   ) {
     super('UserLoginUseCase');
   }
@@ -69,11 +68,33 @@ export class UserLoginUseCase extends BaseUseCase<
         );
       }
 
-      const response = user.toJSON();
+      const jsonUser = user.toJSON();
+
+      const authToken = await this.authService.generateAuthenticationToken(
+        jsonUser.id,
+        jsonUser.username,
+        jsonUser.role as UserRole,
+      );
+
+      const authTokenOrError = UserTokenVM.create({
+        username: jsonUser.username,
+
+        accessToken: authToken.accessToken,
+        accessTokenExpire: authToken.accessTokenExpired,
+
+        refreshToken: authToken.refreshToken,
+        refreshTokenExpire: authToken.refreshTokenExpired,
+      })
+
+      if (authTokenOrError.isFailure) {
+        throw authTokenOrError.errorValue();
+      }
+
+      const jsonAuthToken = authTokenOrError.getValue().toJSON();
 
       this.logger.trace({methodName, traceId}, 'END');
 
-      return right(Result.ok<UserLoginUseCaseResponse>(response));
+      return right(Result.ok<UserLoginUseCaseResponse>(jsonAuthToken));
     } catch (e) {
       const err = e as Error;
       return left(new ApplicationError.UnexpectedError(e as Error));

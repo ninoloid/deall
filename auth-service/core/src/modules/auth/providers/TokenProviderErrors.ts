@@ -25,4 +25,10 @@ export namespace TokenProviderErrors {
       super(false, new ProviderError(`Unauthorized`));
     }
   }
+
+  export class TokenNotProvidedError extends Result<ProviderError> {
+    constructor() {
+      super(false, new ProviderError(`Token Not Provided`));
+    }
+  }
 }

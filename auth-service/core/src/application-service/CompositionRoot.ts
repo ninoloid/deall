@@ -15,6 +15,10 @@ import {UserQuery} from '../modules/user/queries/UserQuery';
 import {IUserQuery} from '../modules/user/queries/IUserQuery';
 import {UserDetailUseCase} from '../modules/user/use-cases/queries/UserDetailUseCase';
 import {UserLoginUseCase} from '../modules/user/use-cases/queries/UserLoginUseCase';
+import {IAuthService} from '../modules/auth/services/IAuthService';
+import {RepositoryAuthService} from '../modules/auth/services/RepositoryAuthService';
+import {JwtTokenProvider} from '../modules/auth/providers/JwtTokenProvider';
+import {ITokenProvider} from '../modules/auth/providers/ITokenProvider';
 
 const NAMEPSACE = 'Deall SejutaCita';
 const ns = createNamespace(NAMEPSACE);
@@ -27,6 +31,8 @@ export default class CompositionRoot {
       _container = createContainer();
       this.composeNamespace();
       this.composeLoggingComponents();
+      this.composeApplicationConfig();
+      this.composeProviders();
       this.composeModels();
       this.composeRepositories();
       this.composeQueries();
@@ -55,6 +61,36 @@ export default class CompositionRoot {
       asFunction(() => {
         PinoLoggerManager.setLogLevel(logLevel);
         return PinoLoggerManager;
+      }).singleton(),
+    );
+  }
+
+  private static composeApplicationConfig(): void {
+    const privateKey = process.env.JWT_PRIVATE_KEY || '';
+    _container.register<string | undefined>(
+      InjectionToken.PrivateKey,
+      asValue(privateKey),
+    );
+
+    const accessTokenDuration = process.env.JWT_ACCESS_TOKEN_DURATION || '1h';
+    _container.register<string | undefined>(
+      InjectionToken.AccessTokenDuration,
+      asValue(accessTokenDuration),
+    );
+
+    const refreshTokenDuration =
+      process.env.JWT_REFRESH_TOKEN_DURATION || '24h';
+    _container.register<string | undefined>(
+      InjectionToken.RefreshTokenDuration,
+      asValue(refreshTokenDuration),
+    );
+  }
+
+  private static composeProviders(): void {
+    _container.register<ITokenProvider>(
+      InjectionToken.TokenProvider,
+      asFunction(() => {
+        return new JwtTokenProvider();
       }).singleton(),
     );
   }
@@ -99,6 +135,31 @@ export default class CompositionRoot {
         return new UserService(userRepository);
       }).singleton(),
     );
+
+    _container.register<IAuthService>(
+      InjectionToken.AuthService,
+      asFunction(() => {
+        const privateKey = _container.resolve<string>(
+          InjectionToken.PrivateKey,
+        );
+        const tokenProvider = _container.resolve<ITokenProvider>(
+          InjectionToken.TokenProvider,
+        );
+        const accessTokenDuration = _container.resolve<string>(
+          InjectionToken.AccessTokenDuration,
+        );
+        const refreshTokenDuration = _container.resolve<string>(
+          InjectionToken.RefreshTokenDuration,
+        );
+
+        return new RepositoryAuthService({
+          tokenProvider,
+          accessTokenDuration,
+          refreshTokenDuration,
+          privateKey,
+        });
+      }).singleton(),
+    );
   }
 
   private static composeUseCases(): void {
@@ -133,7 +194,11 @@ export default class CompositionRoot {
           InjectionToken.UserQuery,
         );
 
-        return new UserLoginUseCase(userQuery);
+        const authService = _container.resolve<IAuthService>(
+          InjectionToken.AuthService,
+        )
+
+        return new UserLoginUseCase(userQuery, authService);
       }).singleton(),
     );
   }
@@ -175,6 +240,16 @@ export default class CompositionRoot {
   public static getUserApplicationService(): IUserApplicationService {
     return _container.resolve<IUserApplicationService>(
       InjectionToken.UserApplicationService,
+    );
+  }
+
+  public static getJwtPrivateKey(): string {
+    return _container.resolve<string>(InjectionToken.PrivateKey);
+  }
+
+  public static getJwtTokenProvider(): ITokenProvider {
+    return _container.resolve<ITokenProvider>(
+      InjectionToken.TokenProvider,
     );
   }
 }
