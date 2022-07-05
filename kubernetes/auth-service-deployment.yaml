@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: auth-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: auth-service
+          resources:
+            limits:
+              cpu: 2
+              memory: 512Mi
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Never
+          env:
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-envs
+                  key: appName
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-envs
+                  key: port
+            - name: MONGO_DATABASE_URL_LOCAL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-envs
+                  key: mongoUrl
+            - name: JWT_PRIVATE_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-envs
+                  key: jwtPrivateKey
+            - name: JWT_ACCESS_TOKEN_DURATION
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-envs
+                  key: accessTokenDuration
+            - name: JWT_REFRESH_TOKEN_DURATION
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-envs
+                  key: refreshTokenDuration

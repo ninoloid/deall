@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-envs
+data:
+  port: "3000"
+  appName: "Auth Service"
+  mongoUrl: "mongodb://mongodb-service:27017/deall"
+  jwtPrivateKey: "deal"
+  accessTokenDuration: "1h"
+  refreshTokenDuration: "24h"

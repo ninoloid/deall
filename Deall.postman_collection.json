@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "542f05d1-f00c-42e4-b905-b23b9d0c2a26",
+		"name": "Deall",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"username\",\n    \"password\": \"password\",\n    \"role\": \"ADMIN\",\n    \"name\": \"name of the user\",\n    \"email\": \"thisisuseremail@mail.com\",\n    \"phone\": \"123456789\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/user/register",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"username\",\n    \"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/auth/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzI4M2U5YTA5MGM0OWZhMWM5Mzc3NCIsInVzZXJuYW1lIjoidXNlcjIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2NTY5OTIzMjUsImV4cCI6MTY1Njk5NTkyNX0.e_QBeu_QulE1xMJQzY4NYra1WzXPVblXIRgmpdPP-XY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:3000/user/:userid",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						":userid"
+					],
+					"variable": [
+						{
+							"key": "userid",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

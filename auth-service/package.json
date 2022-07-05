@@ -5,6 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
+    "seed": "ts-node db/seed.ts",
+    "start": "node dist/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ahmad MSA",

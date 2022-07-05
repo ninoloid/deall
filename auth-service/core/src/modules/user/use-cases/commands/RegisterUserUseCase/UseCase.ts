@@ -10,6 +10,7 @@ import {RegisterUserDTO, RegisterUserErrors} from './';
 import {UserRole} from '../../../../../common/Constants';
 import {EmailAddress} from '../../../../common/domains/EmailAddress';
 import {PhoneNumber} from '../../../../common/domains/PhoneNumber';
+import { hashPasswd } from '../../../../../common/util/Bcrypt';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
@@ -95,9 +96,11 @@ export class RegisterUserUseCase extends BaseUseCase<
         phone = phoneNumberOrError.getValue();
       }
 
+      const password = hashPasswd(dto.password);
+
       const userOrError = User.create({
         username: dto.username,
-        password: dto.password,
+        password,
         role: dto.role,
 
         name: dto.name,

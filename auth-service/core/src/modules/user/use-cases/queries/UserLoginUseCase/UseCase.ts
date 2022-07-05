@@ -9,6 +9,7 @@ import {IUserQuery} from '../../../queries/IUserQuery';
 import {IAuthService} from '../../../../auth/services/IAuthService';
 import {JSONUserTokenVM, UserTokenVM} from '../../../vms/UserTokenVM';
 import {UserRole} from '../../../../../common/Constants';
+import { comparePasswd } from '../../../../../common/util/Bcrypt';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
@@ -69,6 +70,13 @@ export class UserLoginUseCase extends BaseUseCase<
       }
 
       const jsonUser = user.toJSON();
+
+      const passwordValid = comparePasswd(dto.password, jsonUser.password);
+      if (!passwordValid) {
+        return left(
+          new UserLoginErrors.InvalidUsernameOrPassword(),
+        );
+      }
 
       const authToken = await this.authService.generateAuthenticationToken(
         jsonUser.id,

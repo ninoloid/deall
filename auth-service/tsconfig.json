@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true  ,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+    "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "lib": ["es2017"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "lib",
+    "outDir": "dist",
     "sourceMap": true,
     "target": "es6"
   },
-  "include": [
-    "src/**/*",
-    "declarations.d.ts"
-  ],
+  "include": ["src/**/*", "declarations.d.ts"],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",

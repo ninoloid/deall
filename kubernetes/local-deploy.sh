@@ -1,0 +1,2 @@
+kubectl apply -f mongo-pv.yaml,mongo-pv-claim.yaml,mongo-deployment.yaml,mongo-service.yaml,auth-service-envs.yaml,auth-service-deployment.yaml,auth-service-service.yaml
+minikube service auth-service-service --url

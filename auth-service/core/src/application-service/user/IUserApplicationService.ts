@@ -1,4 +1,4 @@
-import {RegisterUserDTO, RegisterUserResponse} from '../../modules/user/use-cases/Commands/RegisterUserUseCase';
+import {RegisterUserDTO, RegisterUserResponse} from '../../modules/user/use-cases/commands/RegisterUserUseCase';
 import {UserDetailDTO, UserDetailResponse} from '../../modules/user/use-cases/queries/UserDetailUseCase';
 import {UserLoginDTO, UserLoginResponse} from '../../modules/user/use-cases/queries/UserLoginUseCase';
 
