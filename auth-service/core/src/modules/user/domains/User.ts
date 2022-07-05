@@ -1,10 +1,12 @@
 import joi from 'joi';
-import { UserRole } from '../../../common/Constants';
+import {UserRole} from '../../../common/Constants';
 import {Entity} from '../../../domain/Entity';
 import {UniqueEntityId} from '../../../domain/UniqueEntityId';
 import {DomainError} from '../../../errors/DomainError';
 import {Guard} from '../../../logic/Guard';
 import {Result} from '../../../logic/Result';
+import {EmailAddress} from '../../common/domains/EmailAddress';
+import {PhoneNumber} from '../../common/domains/PhoneNumber';
 
 export interface UserProps {
   username: string;
@@ -12,8 +14,8 @@ export interface UserProps {
   role: UserRole;
 
   name: string;
-  email: string;
-  phone?: string;
+  email: EmailAddress;
+  phone?: PhoneNumber;
 }
 
 export class User extends Entity<UserProps> {
@@ -23,8 +25,8 @@ export class User extends Entity<UserProps> {
     role: joi.valid(...Object.values(UserRole)),
 
     name: joi.string().required(),
-    email: joi.string().required(),
-    phone: joi.string().optional(),
+    email: joi.object().instance(EmailAddress).required(),
+    phone: joi.object().instance(PhoneNumber).optional(),
   }).required();
 
   get id(): UniqueEntityId {
@@ -47,11 +49,11 @@ export class User extends Entity<UserProps> {
     return this.props.role;
   }
 
-  get email(): string {
+  get email(): EmailAddress {
     return this.props.email;
   }
 
-  get phone(): string | undefined {
+  get phone(): PhoneNumber | undefined {
     return this.props.phone;
   }
 
@@ -75,12 +77,12 @@ export class User extends Entity<UserProps> {
     return Result.ok();
   }
 
-  setEmail(value: string) {
+  setEmail(value: EmailAddress) {
     this.props.email = value;
     return Result.ok();
   }
 
-  setPhone(value: string) {
+  setPhone(value: PhoneNumber) {
     this.props.phone = value;
     return Result.ok();
   }

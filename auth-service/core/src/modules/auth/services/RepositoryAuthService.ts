@@ -1,5 +1,5 @@
 import CompositionRoot from '../../../application-service/CompositionRoot';
-import { UserRole } from '../../../common/Constants';
+import {UserRole} from '../../../common/Constants';
 import {BaseService} from '../../../services/BaseService';
 import {AuthenticationToken} from '../../common/domains/AuthenticationToken';
 import {AccessTokenPayloadDTO} from '../dtos/AccessTokenPayloadDTO';

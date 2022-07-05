@@ -13,4 +13,16 @@ export namespace RegisterUserErrors {
       super(false, new UseCaseError(`Username ${username} already exists`));
     }
   }
+
+  export class InvalidEmailFormat extends Result<UseCaseError> {
+    constructor() {
+      super(false, new UseCaseError(`Invalid Email Format`));
+    }
+  }
+
+  export class InvalidPhoneFormat extends Result<UseCaseError> {
+    constructor() {
+      super(false, new UseCaseError(`Invalid Phone Format`));
+    }
+  }
 }

@@ -8,7 +8,11 @@ import {
   UserDetailResponse,
   UserDetailUseCase
 } from '../../modules/user/use-cases/queries/UserDetailUseCase';
-import { UserLoginDTO, UserLoginResponse, UserLoginUseCase } from '../../modules/user/use-cases/queries/UserLoginUseCase';
+import {
+  UserLoginDTO,
+  UserLoginResponse,
+  UserLoginUseCase
+} from '../../modules/user/use-cases/queries/UserLoginUseCase';
 import {IUserApplicationService} from './IUserApplicationService';
 
 export interface UserApplicationUseCase {

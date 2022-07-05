@@ -8,7 +8,7 @@ import {
 import {IAPIGatewayResponse, forbidden, badRequest, fail, notFound} from '../../../core/src/common/responses/HandlerResponse';
 import {HttpError} from '../../../core/src/common/responses/HttpError';
 import {ApplicationError} from '../../../core/src/errors/ApplicationError';
-import { UserRole } from '../../../core/src/common/Constants';
+import {UserRole} from '../../../core/src/common/Constants';
 
 async function userDetail(
   req: Request,

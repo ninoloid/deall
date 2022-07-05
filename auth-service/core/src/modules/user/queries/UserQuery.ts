@@ -1,5 +1,5 @@
 import CompositionRoot from '../../../application-service/CompositionRoot';
-import { UserRole } from '../../../common/Constants';
+import {UserRole} from '../../../common/Constants';
 import {BaseRepository} from '../../../repository/BaseRepository';
 import {MongoUserProps} from '../mappers/MongoUserMapper';
 import {UserModel} from '../models/User';

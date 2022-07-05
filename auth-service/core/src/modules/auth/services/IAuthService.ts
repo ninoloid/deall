@@ -1,4 +1,4 @@
-import { UserRole } from '../../../common/Constants';
+import {UserRole} from '../../../common/Constants';
 import {AuthenticationToken} from '../../common/domains/AuthenticationToken';
 
 export interface IAuthService {

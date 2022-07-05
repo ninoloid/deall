@@ -1,6 +1,8 @@
-import { UserRole } from '../../../common/Constants';
+import {UserRole} from '../../../common/Constants';
 import {StaticImplements} from '../../../domain/decorators/StaticImplements';
 import {Mapper} from '../../../domain/Mapper';
+import {EmailAddress} from '../../common/domains/EmailAddress';
+import {PhoneNumber} from '../../common/domains/PhoneNumber';
 import {User} from '../domains/User';
 
 export interface MongoUserProps {
@@ -16,22 +18,38 @@ export interface MongoUserProps {
 @StaticImplements<Mapper<User, MongoUserProps>>()
 export class MongoUserMapper {
   public static toDomain(props: MongoUserProps): User {
-    const cartOrError = User.create(
+    const emailOrError = EmailAddress.create(props.email);
+    if (emailOrError.isFailure) {
+      throw emailOrError.errorValue();
+    }
+    const email = emailOrError.getValue();
+
+    let phone: PhoneNumber | undefined;
+
+    if (props.phone) {
+      const phoneNumberOrError = PhoneNumber.create(props.phone);
+      if (phoneNumberOrError.isFailure) {
+        throw phoneNumberOrError.errorValue();
+      }
+      phone = phoneNumberOrError.getValue();
+    }
+
+    const userOrError = User.create(
       {
         username: props.username,
         password: props.password,
         role: props.role as UserRole,
 
         name: props.name,
-        email: props.email,
-        phone: props.phone,
+        email: email,
+        phone: phone,
       }
     );
 
-    if (cartOrError.isFailure) {
-      throw cartOrError.errorValue();
+    if (userOrError.isFailure) {
+      throw userOrError.errorValue();
     } else {
-      return cartOrError.getValue();
+      return userOrError.getValue();
     }
   }
 
@@ -42,8 +60,8 @@ export class MongoUserMapper {
       role: domain.role,
 
       name: domain.name,
-      email: domain.email,
-      phone: domain.phone,
+      email: domain.email.value,
+      phone: domain.phone.value,
     };
   }
 }

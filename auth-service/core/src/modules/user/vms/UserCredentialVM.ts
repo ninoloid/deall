@@ -1,5 +1,5 @@
 import joi from 'joi';
-import { UserRole } from '../../../common/Constants';
+import {UserRole} from '../../../common/Constants';
 import {DomainError} from '../../../errors/DomainError';
 import {Guard} from '../../../logic/Guard';
 import {Result} from '../../../logic/Result';

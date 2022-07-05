@@ -1,15 +1,12 @@
 import joi from 'joi';
 import CompositionRoot from '../../../../../application-service/CompositionRoot';
 import {BaseUseCase} from '../../../../../domain/BaseUseCase';
-import {UniqueEntityId} from '../../../../../domain/UniqueEntityId';
 import {ApplicationError} from '../../../../../errors/ApplicationError';
 import {Guard} from '../../../../../logic/Guard';
 import {Either, left, Result, right} from '../../../../../logic/Result';
-import {User} from '../../../domains/User';
-import {IUserService} from '../../../services/IUserService';
 import {UserDetailDTO, UserDetailErrors} from '.';
-import { IUserQuery } from '../../../queries/IUserQuery';
-import { JSONUserDetailVM } from '../../../vms/UserDetailVM';
+import {IUserQuery} from '../../../queries/IUserQuery';
+import {JSONUserDetailVM} from '../../../vms/UserDetailVM';
 
 type Response = Either<
   | ApplicationError.UnexpectedError

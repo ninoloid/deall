@@ -1,7 +1,6 @@
 import joi from 'joi';
 import CompositionRoot from '../../../../../application-service/CompositionRoot';
 import {BaseUseCase} from '../../../../../domain/BaseUseCase';
-import {UniqueEntityId} from '../../../../../domain/UniqueEntityId';
 import {ApplicationError} from '../../../../../errors/ApplicationError';
 import {Guard} from '../../../../../logic/Guard';
 import {Either, left, Result, right} from '../../../../../logic/Result';
@@ -9,6 +8,8 @@ import {User} from '../../../domains/User';
 import {IUserService} from '../../../services/IUserService';
 import {RegisterUserDTO, RegisterUserErrors} from './';
 import {UserRole} from '../../../../../common/Constants';
+import {EmailAddress} from '../../../../common/domains/EmailAddress';
+import {PhoneNumber} from '../../../../common/domains/PhoneNumber';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
@@ -64,14 +65,44 @@ export class RegisterUserUseCase extends BaseUseCase<
     const dto = guardResult.value!;
 
     try {
+      const usernameExists = await this.userService.isUsernameExists(dto.username);
+
+      if (usernameExists) {
+        return left(
+          new RegisterUserErrors.UsernameAlreadyExists(dto.username)
+        )
+      }
+
+      const emailOrError = EmailAddress.create(dto.email);
+
+      if (emailOrError.isFailure) {
+        return left(
+          new RegisterUserErrors.InvalidEmailFormat()
+        )
+      }
+
+      const email = emailOrError.getValue();
+
+      let phone: PhoneNumber | undefined;
+
+      if (dto.phone) {
+        const phoneNumberOrError = PhoneNumber.create(dto.phone);
+        if (phoneNumberOrError.isFailure) {
+          return left(
+            new RegisterUserErrors.InvalidPhoneFormat()
+          )
+        }
+        phone = phoneNumberOrError.getValue();
+      }
+
       const userOrError = User.create({
         username: dto.username,
         password: dto.password,
         role: dto.role,
 
         name: dto.name,
-        email: dto.email,
-        phone: dto.phone,
+        email,
+        phone,
       });
 
       if (userOrError.isFailure) {

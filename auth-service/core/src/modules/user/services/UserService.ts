@@ -27,4 +27,18 @@ export class UserService
 
     return createdUser;
   }
+
+  async isUsernameExists(username: string): Promise<boolean> {
+    const methodName = 'isUsernameExists';
+    const traceId = CompositionRoot.getTraceId();
+    this.logger.trace({methodName, traceId}, `BEGIN`);
+
+    this.logger.debug({methodName, traceId, args: {username}});
+
+    const isUsernameExists = await this.userRepository.isUsernameExists(username);
+
+    this.logger.trace({methodName, traceId}, `END`);
+
+    return isUsernameExists;
+  }
 }

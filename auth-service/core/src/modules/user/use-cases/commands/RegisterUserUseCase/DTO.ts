@@ -1,4 +1,4 @@
-import { UserRole } from "../../../../../common/Constants";
+import {UserRole} from "../../../../../common/Constants";
 
 export interface RegisterUserDTO {
   username: string;

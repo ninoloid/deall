@@ -30,4 +30,21 @@ export class UserRepository
 
     this.logger.trace({methodName, traceId}, `END`);
   }
+
+  async isUsernameExists(username: string): Promise<boolean> {
+    const methodName = `isUsernameExists`;
+    const traceId = CompositionRoot.getTraceId();
+
+    this.logger.trace({methodName, traceId}, `BEGIN`);
+
+    const query = this.model.exists({username})
+
+    const result = await query;
+
+    this.logger.debug({methodName, traceId, query: {command: 'check username exists', username}});
+
+    this.logger.trace({methodName, traceId}, `END`);
+
+    return result ? true : false;
+  }
 }

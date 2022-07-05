@@ -8,7 +8,7 @@ import {UserLoginDTO, UserLoginErrors} from '.';
 import {IUserQuery} from '../../../queries/IUserQuery';
 import {IAuthService} from '../../../../auth/services/IAuthService';
 import {JSONUserTokenVM, UserTokenVM} from '../../../vms/UserTokenVM';
-import { UserRole } from '../../../../../common/Constants';
+import {UserRole} from '../../../../../common/Constants';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
