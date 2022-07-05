@@ -38,5 +38,4 @@ export const InjectionToken = {
 export enum UserRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
-  USER_SPECIFIED = 'USER_SPECIFIED',
 }

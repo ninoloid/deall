@@ -8,6 +8,7 @@ import {Either, left, Result, right} from '../../../../../logic/Result';
 import {User} from '../../../domains/User';
 import {IUserService} from '../../../services/IUserService';
 import {RegisterUserDTO, RegisterUserErrors} from './';
+import {UserRole} from '../../../../../common/Constants';
 
 type Response = Either<
   | ApplicationError.UnexpectedError
@@ -31,7 +32,7 @@ export class RegisterUserUseCase extends BaseUseCase<
   private SCHEMA = joi.object<RegisterUserDTO>({
     username: joi.string().required(),
     password: joi.string().required(),
-
+    role: joi.valid(...Object.values(UserRole)).required(),
     name: joi.string().required(),
     email: joi.string().required(),
     phone: joi.string().optional(),
@@ -66,6 +67,7 @@ export class RegisterUserUseCase extends BaseUseCase<
       const userOrError = User.create({
         username: dto.username,
         password: dto.password,
+        role: dto.role,
 
         name: dto.name,
         email: dto.email,

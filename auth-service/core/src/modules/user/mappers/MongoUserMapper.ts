@@ -1,3 +1,4 @@
+import { UserRole } from '../../../common/Constants';
 import {StaticImplements} from '../../../domain/decorators/StaticImplements';
 import {Mapper} from '../../../domain/Mapper';
 import {User} from '../domains/User';
@@ -5,6 +6,7 @@ import {User} from '../domains/User';
 export interface MongoUserProps {
   username: string;
   password: string;
+  role: string;
 
   name: string;
   email: string;
@@ -18,6 +20,7 @@ export class MongoUserMapper {
       {
         username: props.username,
         password: props.password,
+        role: props.role as UserRole,
 
         name: props.name,
         email: props.email,
@@ -36,6 +39,7 @@ export class MongoUserMapper {
     return {
       username: domain.username,
       password: domain.password,
+      role: domain.role,
 
       name: domain.name,
       email: domain.email,

@@ -1,4 +1,5 @@
 import joi from 'joi';
+import { UserRole } from '../../../common/Constants';
 import {Entity} from '../../../domain/Entity';
 import {UniqueEntityId} from '../../../domain/UniqueEntityId';
 import {DomainError} from '../../../errors/DomainError';
@@ -8,6 +9,7 @@ import {Result} from '../../../logic/Result';
 export interface UserProps {
   username: string;
   password: string;
+  role: UserRole;
 
   name: string;
   email: string;
@@ -18,6 +20,7 @@ export class User extends Entity<UserProps> {
   private static SCHEMA = joi.object<UserProps>({
     username: joi.string().required(),
     password: joi.string().required(),
+    role: joi.valid(...Object.values(UserRole)),
 
     name: joi.string().required(),
     email: joi.string().required(),
@@ -40,6 +43,10 @@ export class User extends Entity<UserProps> {
     return this.props.name;
   }
 
+  get role(): UserRole {
+    return this.props.role;
+  }
+
   get email(): string {
     return this.props.email;
   }
@@ -55,6 +62,11 @@ export class User extends Entity<UserProps> {
 
   setPassword(value: string) {
     this.props.password = value;
+    return Result.ok();
+  }
+
+  setRole(value: UserRole) {
+    this.props.role = value;
     return Result.ok();
   }
 
