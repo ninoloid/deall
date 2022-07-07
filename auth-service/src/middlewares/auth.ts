@@ -6,6 +6,14 @@ import {HttpError} from '../../core/src/common/responses/HttpError';
 import {forbidden, fail} from '../../core/src/common/responses/HandlerResponse';
 import {UserRole} from '../../core/src/common/Constants';
 
+export interface UserDecodedToken {
+  id: string,
+  username: string,
+  role: UserRole
+  iat: number,
+  exp: number,
+}
+
 export const authenticationMiddleware = (accessRole = [UserRole.ADMIN, UserRole.USER]) => {
   return async function(req: Request, res: Response, next: NextFunction) {
     CompositionRoot.composeApplication();
@@ -22,13 +30,7 @@ export const authenticationMiddleware = (accessRole = [UserRole.ADMIN, UserRole.
   
       const token = authorization.replace('Bearer ','')
   
-      const user: {
-        id: string,
-        username: string,
-        role: UserRole
-        iat: number,
-        exp: number,
-      } = await JwtTokenProvider.verifyToken(token, JwtPrivateKey, {});
+      const user: UserDecodedToken = await JwtTokenProvider.verifyToken(token, JwtPrivateKey, {});
 
       if (!accessRole.includes(user.role)) {
         throw new TokenProviderErrors.Unauthorized();

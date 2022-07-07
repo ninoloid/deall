@@ -7,4 +7,11 @@ export interface IAuthService {
     username: string,
     role: UserRole,
   ): Promise<AuthenticationToken>;
+
+  generateAccessToken(
+    userId: string,
+    username: string,
+    role: UserRole,
+    refreshToken: string,
+  ): Promise<AuthenticationToken>;
 }

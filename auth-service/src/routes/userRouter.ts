@@ -1,9 +1,6 @@
 import express from 'express';
 import {registerUser, userDetail} from '../handlers';
-import {
-  authenticationMiddleware,
-  // authorizationMiddleware
-} from '../middlewares/auth';
+import {authenticationMiddleware} from '../middlewares/auth';
 
 const router = express.Router();
 

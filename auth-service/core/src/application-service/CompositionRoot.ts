@@ -19,6 +19,7 @@ import {IAuthService} from '../modules/auth/services/IAuthService';
 import {RepositoryAuthService} from '../modules/auth/services/RepositoryAuthService';
 import {JwtTokenProvider} from '../modules/auth/providers/JwtTokenProvider';
 import {ITokenProvider} from '../modules/auth/providers/ITokenProvider';
+import { UserRefreshTokenUseCase } from '../modules/user/use-cases/queries/UserRefreshTokenUseCase';
 
 const NAMEPSACE = 'Deall SejutaCita';
 const ns = createNamespace(NAMEPSACE);
@@ -201,6 +202,17 @@ export default class CompositionRoot {
         return new UserLoginUseCase(userQuery, authService);
       }).singleton(),
     );
+
+    _container.register<UserRefreshTokenUseCase>(
+      InjectionToken.UserRefreshTokenUseCase,
+      asFunction(() => {
+        const authService = _container.resolve<IAuthService>(
+          InjectionToken.AuthService,
+        )
+
+        return new UserRefreshTokenUseCase(authService);
+      }).singleton(),
+    )
   }
 
   private static composeUserApplicationService(): void {
@@ -219,6 +231,10 @@ export default class CompositionRoot {
           userLogin: _container.resolve<UserLoginUseCase>(
             InjectionToken.UserLoginUseCase
           ),
+
+          userRefreshToken: _container.resolve<UserRefreshTokenUseCase>(
+            InjectionToken.UserRefreshTokenUseCase
+          )
         });
       }),
     );

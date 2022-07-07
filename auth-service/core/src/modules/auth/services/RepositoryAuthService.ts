@@ -64,6 +64,49 @@ export class RepositoryAuthService extends BaseService implements IAuthService {
 
     return token.getValue();
   }
+
+  async generateAccessToken(
+    id: string,
+    username: string,
+    role: UserRole,
+    refreshToken: string,
+  ): Promise<AuthenticationToken> {
+    const methodName = `generateRefreshToken`;
+    const traceId = CompositionRoot.getTraceId();
+    this.logger.trace({methodName, traceId}, `BEGIN`);
+
+    this.logger.debug({methodName, traceId, args: {id, username}});
+
+    const accessTokenPayload: AccessTokenPayloadDTO = {
+      id,
+      username,
+      role,
+    };
+
+    const accessToken = await this.params.tokenProvider.signToken<AccessTokenPayloadDTO>(
+      accessTokenPayload,
+      this.params.privateKey,
+      {expiresIn: this.params.accessTokenDuration},
+    );
+
+    const accessTokenPayloadDecode = this.params.tokenProvider.decodeToken<AccessTokenPayloadDTO>(
+      accessToken,
+    );
+    const refreshTokenPayloadDecode = this.params.tokenProvider.decodeToken<AccessTokenPayloadDTO>(
+      refreshToken,
+    );
+
+    const token = AuthenticationToken.create({
+      accessToken,
+      refreshToken,
+      accessTokenExpired: new Date(accessTokenPayloadDecode.exp! * 1000),
+      refreshTokenExpired: new Date(refreshTokenPayloadDecode.exp! * 1000),
+    });
+
+    this.logger.trace({methodName, traceId}, `END`);
+
+    return token.getValue();
+  }
 }
 
 export interface RepositoryAuthServiceParams {

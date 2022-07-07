@@ -22,6 +22,7 @@ export const InjectionToken = {
   RegisterUserUseCase: 'REGISTER_USER_USE_CASE',
   UserDetailUseCase: 'USER_DETAIL_USE_CASE',
   UserLoginUseCase: 'USER_LOGIN_USE_CASE',
+  UserRefreshTokenUseCase: 'USER_REFRESH_TOKEN_USE_CASE',
 
   // REPOSITORY
   UserRepository: 'USER_REPOSITORY',
