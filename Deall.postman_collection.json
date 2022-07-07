@@ -107,6 +107,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzY5OWQ0MjlmMjM1NWI1YjMyOTNmZiIsInVzZXJuYW1lIjoidXNlciIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNjU3MTgyNzE3LCJleHAiOjE2NTcyNjkxMTd9.euqP6FAzg0-IAB0OBkrBvoUD1fg5Zx2WR1udInzEq08",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:3000/auth/refresh-token",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

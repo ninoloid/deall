@@ -43,6 +43,8 @@ npm run dev
 URL:
   http://127.0.0.1:3000/user/register
 
+METHOD: POST
+
 Body:
   {
     "username": "username",
@@ -62,6 +64,8 @@ Body:
 URL:
   http://127.0.0.1:3000/auth/login
 
+METHOD: POST
+
 Body:
   {
     "username": "username",
@@ -75,7 +79,9 @@ Body:
 URL:
   http://127.0.0.1:3000/auth/refresh-token
 
-Embed the "refresh token" to req.headers.authorization instead of "access token". This endpoint will return the same format of login endpoint but the access token is replaced by new generated token.
+METHOD: POST
+
+Embed the "refresh token" to req.headers.authorization instead of "access token". This endpoint will return the same format with login endpoint but the access token is replaced by new generated token.
 ```
 
 ---
@@ -85,6 +91,8 @@ Embed the "refresh token" to req.headers.authorization instead of "access token"
 ```
 URL:
   http://127.0.0.1:3000/user/:userid
+
+METHOD: GET
 
 Params:
   id
